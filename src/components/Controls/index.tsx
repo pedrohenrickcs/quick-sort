@@ -1,5 +1,4 @@
 import React from 'react';
-
 interface ControlsProps {
   delay: number;
   setDelay: React.Dispatch<React.SetStateAction<number>>;
