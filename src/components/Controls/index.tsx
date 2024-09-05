@@ -27,7 +27,7 @@ const Controls: React.FC<ControlsProps> = ({
         <input
           type="range"
           min="0"
-          max="1000"
+          max="100"
           value={delay}
           onChange={(e) => setDelay(Number(e.target.value))}
           className="ml-2"
@@ -39,10 +39,13 @@ const Controls: React.FC<ControlsProps> = ({
         <input
           type="range"
           min="10"
-          max="1000"
+          max="100"
           step="5"
           value={numElements}
-          onChange={(e) => setNumElements(Number(e.target.value))}
+          onChange={(e) => {
+            const newNumElements = Number(e.target.value);
+            setNumElements(newNumElements);
+          }}
           className="ml-2"
         />
       </div>

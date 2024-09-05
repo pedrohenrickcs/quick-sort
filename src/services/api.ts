@@ -1,3 +1,4 @@
+// services/api.ts
 import axios from 'axios';
 
 export const fetchNumbers = async (count: number): Promise<number[]> => {

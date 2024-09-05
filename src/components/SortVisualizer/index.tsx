@@ -11,6 +11,7 @@ import {
 } from 'chart.js';
 import Controls from '../Controls';
 import { fetchNumbers } from '../../services/api';
+import { quickSort } from '../../utils/quickSort'; 
 
 ChartJS.register(
   CategoryScale,
@@ -35,40 +36,20 @@ const SortingVisualizer: React.FC = () => {
   const fetchAndSetNumbers = async (count: number) => {
     const numbers = await fetchNumbers(count);
     setArray(numbers);
+
     setIsSorted(false);
+    console.log('array is sorted', array);
   };
 
   useEffect(() => {
     fetchAndSetNumbers(numElements);
   }, [numElements]);
 
-  const quickSort = async (arr: DataSet, left: number, right: number): Promise<void> => {
-    if (left >= right || shouldStop) return;
-    const pivotIndex = Math.floor((left + right) / 2);
-    const pivot = arr[pivotIndex];
-    let i = left;
-    let j = right;
-
-    while (i <= j) {
-      while (arr[i] < pivot) i++;
-      while (arr[j] > pivot) j--;
-      if (i <= j) {
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-        setArray([...arr]);
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        i++;
-        j--;
-      }
-    }
-    await quickSort(arr, left, j);
-    await quickSort(arr, i, right);
-  };
-
   const handlePlay = (): void => {
     if (!sorting && !isSorted) {
       setSorting(true);
       setShouldStop(false);
-      quickSortPromise.current = quickSort(array, 0, array.length - 1);
+      quickSortPromise.current = quickSort(array, 0, array.length - 1, delay, shouldStop);
       quickSortPromise.current.then(() => {
         setSorting(false);
         setIsSorted(true);
@@ -99,10 +80,21 @@ const SortingVisualizer: React.FC = () => {
   };
 
   const chartOptions = {
-    animation: {
-      duration: 0,
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const, 
+      },
+      tooltip: {
+        callbacks: {
+          label: (context: any) => `Value: ${context.raw}`,
+        },
+      },
     },
     scales: {
+      x: {
+        beginAtZero: true,
+      },
       y: {
         beginAtZero: true,
       },
